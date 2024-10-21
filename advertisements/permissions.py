@@ -1,0 +1,12 @@
+from rest_framework.permissions import BasePermission
+
+
+class IsOwnerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in ['GET']:
+            return True
+        elif request.method in ['DELETE']:
+            """Удалять может создатель и админ"""
+            return request.user == obj.creator or request.user.is_staff
+        return request.user == obj.creator
+
